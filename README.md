@@ -2,7 +2,7 @@
 
 #### Bios MOD without hardware flashing requirement
 
-[![download](https://img.shields.io/github/downloads/serdeliuk/VirtualBiosMod/total)](https://github.com/serdeliuk/VirtualBiosMod/releases/download/1/VirtualBioosMod.efi.zip)
+[![download](https://img.shields.io/github/downloads/serdeliuk/VirtualBiosMod/total)](https://github.com/serdeliuk/VirtualBiosMod/releases/download/1/VirtualBiosMod.efi.zip)
 
 This virtual mod is not permament and if your new settings goes bad a power cycle will reset your settings to factory default.
 
