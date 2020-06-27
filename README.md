@@ -14,7 +14,7 @@ Put the new entry as first boot and the second boot put OS which want to boot af
 
 This version does not modify your bios, is just to collect informations, so please attach images with your boot screen to the following thread.
 
-Use this thread for comments [Virtual Bios Mod without flash](https://www.tonymacx86.com/threads/guide-virtual-bios-mod-without-flash.300335//)
+Use this thread for comments [Virtual Bios Mod without flashing](https://www.tonymacx86.com/threads/guide-virtual-bios-mod-without-flash.300335//)
 <br><br>
 
 Have fun!
