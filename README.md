@@ -1,2 +1,3 @@
 # VirtualBiosMod
-Virtual Bios mod without flasjh
+Virtual Bios mod without hardware flash
+
