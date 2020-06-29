@@ -4,7 +4,7 @@
 
 [![download](https://img.shields.io/github/downloads/serdeliuk/VirtualBiosMod/total)](https://github.com/serdeliuk/VirtualBiosMod/releases/download/1/VirtualBiosMod.efi.zip)
 
-This virtual mod is not permament and if your new settings goes bad you need to remoce cmos battery to reset your settings to factory default.
+This virtual mod is not permament and if your new settings goes bad you need to remove cmos battery to reset your settings to factory default.
 
 It was tested only on Asus ROG STRIX G531GT 
 
