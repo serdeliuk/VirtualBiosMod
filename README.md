@@ -22,7 +22,7 @@ This version modify your bios cmos settings, you can change bios lock and / or d
 Use this thread for comments [Virtual Bios Mod without flashing](https://www.tonymacx86.com/threads/guide-virtual-bios-mod-without-flash.300335//)
 <br><br>
 
-Sample img
+Virtual Bios MOD boot screen
 ---
 ![VirtualBiosMod](https://github.com/serdeliuk/VirtualBiosMod/blob/master/img/VirtualBiosMod.jpg)
 
