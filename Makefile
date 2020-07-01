@@ -1,0 +1,62 @@
+ARCH            = $(shell uname -m)
+
+OBJS            = VirtualBiosMod.o
+TARGET          = VirtualBiosMod.efi
+
+EFI_INC          = /usr/include/efi
+EFI_LIB          = /usr/lib
+EFI_CRT_OBJS    = $(EFI_LIB)/crt0-efi-$(ARCH).o
+EFI_LDS         = $(EFI_LIB)/elf_$(ARCH)_efi.lds
+
+CFLAGS          = -nostdlib \
+                  -fno-stack-protector \
+                  -fno-strict-aliasing \
+                  -fno-builtin \
+                  -fpic \
+                  -fshort-wchar \
+                  -mno-red-zone \
+                  -Wall
+
+ifeq ($(ARCH),x86_64)
+  CFLAGS        += -DEFI_FUNCTION_WRAPPER
+endif
+
+CFLAGS          += -I$(EFI_INC) \
+                   -I$(EFI_INC)/$(ARCH) \
+                   -I$(EFI_INC)/protocol
+
+LDFLAGS         = -nostdlib \
+                  -znocombreloc \
+                  -shared \
+                  -no-undefined \
+                  -Bsymbolic
+
+LDFLAGS         += -T $(EFI_LDS) \
+                   -L$(EFI_LIB) \
+                   $(EFI_CRT_OBJS)
+
+LIBS            = -lefi \
+                  -lgnuefi
+
+OBJCOPYFLAGS    = -j .text \
+                  -j .sdata \
+                  -j .data \
+                  -j .dynamic \
+                  -j .dynsym \
+                  -j .rel \
+                  -j .rela \
+                  -j .reloc \
+                  --target=efi-app-$(ARCH)
+
+all: $(TARGET)
+
+VirtualBiosMod.so: $(OBJS)
+		  ld $(LDFLAGS) $(OBJS) -o $@ $(LIBS)
+
+%.efi: %.so
+		  objcopy $(OBJCOPYFLAGS) $^ $@
+
+.PHONY:    clean
+
+clean:
+		  rm -f $(OBJS) $(TARGET) VirtualBiosMod.so
