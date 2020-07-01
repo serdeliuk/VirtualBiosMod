@@ -23,7 +23,7 @@ Use this thread for comments [Virtual Bios Mod without flashing](https://www.ton
 <br><br>
 
 ### Special thanks to
-- @LongSoft for Universal-IFR-Extractor and UEFItool
+- @LongSoft for Universal-IFR-Extractor and UEFItool 
 - @Zibri for afulinx
 - @RomanHargrave for amifldrv
 
