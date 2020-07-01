@@ -22,6 +22,12 @@ This version modify your bios cmos settings, you can change bios lock and / or d
 Use this thread for comments [Virtual Bios Mod without flashing](https://www.tonymacx86.com/threads/guide-virtual-bios-mod-without-flash.300335//)
 <br><br>
 
+### Special thanks to
+- @LongSoft for Universal-IFR-Extractor and UEFItool
+- @Zibri for afulinx
+- @RomanHargrave for amifldrv
+
+
 I hope that will help in your future projects<br><br>
 Have fun!
 
