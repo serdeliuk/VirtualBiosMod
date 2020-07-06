@@ -39,16 +39,34 @@ EFI_STATUS efi_main (EFI_HANDLE image, EFI_SYSTEM_TABLE *systab)
     CHAR8 *data;
     UINTN data_size;
     UINT32 *attr = 0;
+    EFI_INPUT_KEY efi_input_key;
+    EFI_INPUT_KEY KeyReset = {0};
+
+    EFI_STATUS efi_status;
 
     InitializeLib(image, systab);
+
+    Print(L"[VirtualBiosMod] Press del to enter Setup, or any other key...");
+
+    WaitForSingleEvent(ST->ConIn->WaitForKey, 30000000); // 10000000 = one second
+
+    BOOLEAN exit = FALSE;
+    while (!exit) {
+
+    efi_status = uefi_call_wrapper(ST->ConIn->ReadKeyStroke, 2, ST->ConIn, &efi_input_key);
+
+	if (efi_status != EFI_SUCCESS) {
+	    Print(L"Exiting\n");
+	    return EFI_SUCCESS;
+	} else {
+	    break;
+	}
+    }
 
     uefi_call_wrapper(ST->ConOut->ClearScreen, 1, ST->ConOut);
     uefi_call_wrapper(ST->ConOut->SetAttribute, 2, ST->ConOut, EFI_WHITE|EFI_BACKGROUND_BLUE);
 
-
-    EFI_INPUT_KEY efi_input_key;
-    EFI_STATUS efi_status;
-    BOOLEAN exit = FALSE;
+//    BOOLEAN exit = FALSE;
 
 /////////--DRAW MAIN BLUE BOX--/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     Print(L"                 SERDELIUK - VirtualBiosMod CMOS Setup Utility                  ");
@@ -102,6 +120,7 @@ EFI_STATUS efi_main (EFI_HANDLE image, EFI_SYSTEM_TABLE *systab)
     int offset_video = 0xa45;
 
 redraw:
+    WaitForSingleEvent(ST->ConIn->WaitForKey, 10); // 10000000 = one second
     uefi_call_wrapper(ST->ConOut->SetAttribute, 2, ST->ConOut, EFI_WHITE|EFI_BACKGROUND_BLUE);
     uefi_call_wrapper(ST->ConOut->SetCursorPosition, 3, ST->ConOut, 3, 8); // h, v ;pos
     Print(L"Bios Lock at 0x%02x is:  0x%02x", offset_lock, data[offset_lock]);
@@ -129,7 +148,6 @@ redraw:
     Print(L" Press B to unlock the bios\n");
 
 
-
     Print(L" Press ENTER to save new settings\n");
     if ( changes == 0 ) {
 	Print(L" Press any other key or wait to boot without any mods\n");
@@ -137,7 +155,7 @@ redraw:
 	Print(L" Press X to boot without any mods                    \n");
     }
 
-    WaitForSingleEvent(ST->ConIn->WaitForKey, 40000000); // 10000000 = one second
+    WaitForSingleEvent(ST->ConIn->WaitForKey, 30000000); // 10000000 = one second
 
     while (!exit) {
 
@@ -151,6 +169,7 @@ redraw:
 	    } else {
 		data[offset_video] = 0x0;
 	    }
+	    efi_input_key = KeyReset;
 	    goto redraw;
         case 'b':
 	changes=1;
@@ -159,6 +178,7 @@ redraw:
 	    } else {
 		data[offset_lock] = 0x0;
 	    }
+	    efi_input_key = KeyReset;
 	    goto redraw;
         case 'x':
     	    Print(L" Exiting......\n");
@@ -184,6 +204,7 @@ redraw:
     	    return EFI_SUCCESS;
         default: // continue boot
 	    if ( changes == 1 ) {
+		efi_input_key = KeyReset;
 		goto redraw;
 	    }
     	    Print(L" Exiting......\n");
@@ -193,3 +214,8 @@ redraw:
     }
     	    return EFI_SUCCESS;
 }
+
+
+
+
+
