@@ -26,7 +26,7 @@ Virtual Bios MOD boot screen
 ![VirtualBiosMod](https://github.com/serdeliuk/VirtualBiosMod/blob/master/img/VirtualBiosMod.jpg)
 
 ### Special thanks to
-- @LongSoft for [Universal-IFR-Extractor](https://github.com/LongSoft/Universal-IFR-Extractor) and [UEFItool](https://github.com/LongSoft/UEFITool[)
+- @LongSoft for [Universal-IFR-Extractor](https://github.com/LongSoft/Universal-IFR-Extractor) and [UEFItool](https://github.com/LongSoft/UEFITool)
 - @Zibri for [afulnx](https://github.com/Zibri/afulnx)
 - @RomanHargrave for [amifldrv](https://github.com/RomanHargrave/amifldrv)
 
