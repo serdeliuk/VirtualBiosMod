@@ -23,7 +23,7 @@ Use this thread for comments [Virtual Bios Mod without flashing](https://www.ton
 
 Virtual Bios MOD boot screen
 ---
-![VirtualBiosMod](https://github.com/serdeliuk/VirtualBiosMod/blob/master/img/VirtualBiosMod.jpg)
+![VirtualBiosMod](https://github.com/serdeliuk/VirtualBiosMod/blob/master/img/VirtualBiosMod.1.0.6.jpg)
 
 ### Special thanks to
 - @LongSoft for [Universal-IFR-Extractor](https://github.com/LongSoft/Universal-IFR-Extractor) and [UEFItool](https://github.com/LongSoft/UEFITool)
