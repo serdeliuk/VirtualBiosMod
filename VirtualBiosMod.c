@@ -59,25 +59,25 @@ EFI_STATUS efi_main (EFI_HANDLE image, EFI_SYSTEM_TABLE *systab)
 
     uefi_call_wrapper(ST->ConOut->ClearScreen, 1, ST->ConOut);
     if ( params == 0 ){
-    Print(L"\n\n\n[VirtualBiosMod v%d.%d.%d] Press ",vmajor,vminor,vpatch);
-    uefi_call_wrapper(ST->ConOut->SetAttribute, 2, ST->ConOut, EFI_WHITE|EFI_BACKGROUND_BLUE);
-    Print(L"del");
-    uefi_call_wrapper(ST->ConOut->SetAttribute, 2, ST->ConOut, EFI_WHITE|EFI_BACKGROUND_BLACK);
-    Print(L" or any other key to enter Setup...");
+	Print(L"\n\n\n[VirtualBiosMod v%d.%d.%d] Press ",vmajor,vminor,vpatch);
+	uefi_call_wrapper(ST->ConOut->SetAttribute, 2, ST->ConOut, EFI_WHITE|EFI_BACKGROUND_BLUE);
+	Print(L"del");
+	uefi_call_wrapper(ST->ConOut->SetAttribute, 2, ST->ConOut, EFI_WHITE|EFI_BACKGROUND_BLACK);
+	Print(L" or any other key to enter Setup...");
 
-    WaitForSingleEvent(ST->ConIn->WaitForKey, 10000000); // 10000000 = one second
+	WaitForSingleEvent(ST->ConIn->WaitForKey, 10000000); // 10000000 = one second
 
-    while (!exit) {
+	while (!exit) {
 
-    efi_status = uefi_call_wrapper(ST->ConIn->ReadKeyStroke, 2, ST->ConIn, &efi_input_key);
+	efi_status = uefi_call_wrapper(ST->ConIn->ReadKeyStroke, 2, ST->ConIn, &efi_input_key);
 
-	if (efi_status != EFI_SUCCESS) {
-	    Print(L" Exiting\n\n\n");
-	    return EFI_SUCCESS;
-	} else {
-	    break;
+	    if (efi_status != EFI_SUCCESS) {
+		Print(L" Exiting\n\n\n");
+		return EFI_SUCCESS;
+	    } else {
+		break;
+	    }
 	}
-    }
     }
 
     uefi_call_wrapper(ST->ConOut->ClearScreen, 1, ST->ConOut);
