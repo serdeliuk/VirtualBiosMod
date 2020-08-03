@@ -1,38 +1,39 @@
+/*
+        This file is part of VirtualBiosMod, a virtual bios setup interface
+        Copyright (C) 2020 Alexandru Marc Serdeliuc
+
+        https://github.com/serdeliuk/VirtualBiosMod
+
+        VirtualBiosMod is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        VirtualBiosMod is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with VirtualBiosMod.  If not, see <http://www.gnu.org/licenses/>
+
+        Please keep this header in all your source codes.
+*/
+
+
 #include <efi.h>
 #include <efilib.h>
-
-
-static EFI_STATUS get_bios_variables(const EFI_GUID *vendor, CHAR16 *name, CHAR8 **buffer, UINTN *size, UINT32 *attributes) {
-        CHAR8 *buf;
-        UINTN l;
-        EFI_STATUS err;
-
-        l = sizeof(CHAR16 *) * EFI_MAXIMUM_VARIABLE_SIZE;
-        buf = AllocatePool(l);
-        if (!buf)
-                return EFI_OUT_OF_RESOURCES;
-
-        err = uefi_call_wrapper(RT->GetVariable, 5, name, vendor, attributes, &l, buf);
-        if (EFI_ERROR(err) == EFI_SUCCESS) {
-                *buffer = buf;
-                if (size)
-                        *size = l;
-        } else
-                FreePool(buf);
-        return err;
-}
-
-
-static EFI_STATUS set_bios_variables(CHAR16 *name, const EFI_GUID *vendor, UINTN size, CHAR8 *buffer) {
-    EFI_STATUS status;
-    status = uefi_call_wrapper(RT->SetVariable, 5, name, vendor, 3, size, buffer);
-    return status;
-}
+#include "functions.c"
 
 
 EFI_STATUS efi_main (EFI_HANDLE image, EFI_SYSTEM_TABLE *systab)
 {
     int changes = 0;
+    int vmajor = 1;
+    int vminor = 0;
+    int vpatch = 6;
+    int params = 0;
+
     EFI_STATUS status;
     EFI_GUID guid = { 0xEC87D643, 0xEBA4, 0x4BB5, { 0xA1, 0xE5, 0x3F, 0x3E, 0x36, 0xB2, 0x0D, 0xA9 } };
 
@@ -43,52 +44,51 @@ EFI_STATUS efi_main (EFI_HANDLE image, EFI_SYSTEM_TABLE *systab)
     EFI_INPUT_KEY KeyReset = {0};
 
     EFI_STATUS efi_status;
+    EFI_LOADED_IMAGE *loaded_image = NULL;
+    BOOLEAN exit = FALSE;
 
     InitializeLib(image, systab);
 
-    Print(L"[VirtualBiosMod] Press del to enter Setup, or any other key...");
+    status = uefi_call_wrapper(systab->BootServices->HandleProtocol, 3, image, &LoadedImageProtocol, (void **) &loaded_image);
+    if (EFI_ERROR(status)) {
+            Print(L"[VirtualBiosMod] err: %r\n", status);
+    } else {
+	params = loaded_image->LoadOptionsSize;
+//            Print(L"[VirtualBiosMod] params: %d\n", params);
+    }
 
-    WaitForSingleEvent(ST->ConIn->WaitForKey, 30000000); // 10000000 = one second
+    uefi_call_wrapper(ST->ConOut->ClearScreen, 1, ST->ConOut);
+    if ( params == 0 ){
+    Print(L"\n\n\n[VirtualBiosMod v%d.%d.%d] Press ",vmajor,vminor,vpatch);
+    uefi_call_wrapper(ST->ConOut->SetAttribute, 2, ST->ConOut, EFI_WHITE|EFI_BACKGROUND_BLUE);
+    Print(L"del");
+    uefi_call_wrapper(ST->ConOut->SetAttribute, 2, ST->ConOut, EFI_WHITE|EFI_BACKGROUND_BLACK);
+    Print(L" or any other key to enter Setup...");
 
-    BOOLEAN exit = FALSE;
+    WaitForSingleEvent(ST->ConIn->WaitForKey, 10000000); // 10000000 = one second
+
     while (!exit) {
 
     efi_status = uefi_call_wrapper(ST->ConIn->ReadKeyStroke, 2, ST->ConIn, &efi_input_key);
 
 	if (efi_status != EFI_SUCCESS) {
-	    Print(L"Exiting\n");
+	    Print(L" Exiting\n\n\n");
 	    return EFI_SUCCESS;
 	} else {
 	    break;
 	}
     }
+    }
 
     uefi_call_wrapper(ST->ConOut->ClearScreen, 1, ST->ConOut);
     uefi_call_wrapper(ST->ConOut->SetAttribute, 2, ST->ConOut, EFI_WHITE|EFI_BACKGROUND_BLUE);
 
-//    BOOLEAN exit = FALSE;
 
 /////////--DRAW MAIN BLUE BOX--/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Print(L"                 SERDELIUK - VirtualBiosMod CMOS Setup Utility                  ");
-    Print(L"%c",BOXDRAW_DOWN_RIGHT_DOUBLE);
-	for(int i = 0; i < 78; i++) {
-	    Print(L"%c",BOXDRAW_DOUBLE_HORIZONTAL);
-	};
-    Print(L"%c",BOXDRAW_DOWN_LEFT_DOUBLE);
 
-    for(int w=0; w<11 ; w++){
-	Print(L"%c",BOXDRAW_VERTICAL);
-	    for(int i = 0; i < 78; i++) {
-		Print(L" ");
-	    };
-	Print(L"%c",BOXDRAW_VERTICAL);
-    };
+    Print(L"             SERDELIUK - VirtualBiosMod v%d.%d.%d CMOS Setup Utility               ",vmajor,vminor,vpatch);
+    draw_box_simple(80, 11, 0, 1);
 
-    Print(L"%c",BOXDRAW_UP_RIGHT_DOUBLE);
-	for(int i = 0; i < 78; i++) {
-	    Print(L"%c",BOXDRAW_DOUBLE_HORIZONTAL);
-	};
-    Print(L"%c",BOXDRAW_UP_LEFT_DOUBLE);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -107,45 +107,51 @@ EFI_STATUS efi_main (EFI_HANDLE image, EFI_SYSTEM_TABLE *systab)
 	uefi_call_wrapper(ST->ConOut->SetAttribute, 2, ST->ConOut, EFI_RED|EFI_BACKGROUND_BLACK);
         Print(L"Unsupported B.I.O.S.\n" , status);
 	WaitForSingleEvent(ST->ConIn->WaitForKey, 10000000); // 10000000 = one second
-        return EFI_SUCCESS;
+	    if ( params == 0){ 
+    		return EFI_SUCCESS;
+	    } else {
+		uefi_call_wrapper(RT->ResetSystem, 4, EfiResetWarm, EFI_SUCCESS, 0, NULL);
+	    }
     }
-
-    uefi_call_wrapper(ST->ConOut->SetCursorPosition, 3, ST->ConOut, 3, 6); // h, v ;pos
-    Print(L"Size:                   %d " , data_size);
-
-    uefi_call_wrapper(ST->ConOut->SetCursorPosition, 3, ST->ConOut, 3, 7); // h, v ;pos
-    Print(L"Attributes no:              %d " , attr);
 
     int offset_lock = 0xb4b;
     int offset_video = 0xa45;
+    int offset_audio = 0x108E;
 
 redraw:
     WaitForSingleEvent(ST->ConIn->WaitForKey, 10); // 10000000 = one second
     uefi_call_wrapper(ST->ConOut->SetAttribute, 2, ST->ConOut, EFI_WHITE|EFI_BACKGROUND_BLUE);
-    uefi_call_wrapper(ST->ConOut->SetCursorPosition, 3, ST->ConOut, 3, 8); // h, v ;pos
-    Print(L"Bios Lock at 0x%02x is:  0x%02x", offset_lock, data[offset_lock]);
     if ( data[offset_lock] == 0) {
-	uefi_call_wrapper(ST->ConOut->SetCursorPosition, 3, ST->ConOut, 3, 9); // h, v ;pos
+	uefi_call_wrapper(ST->ConOut->SetCursorPosition, 3, ST->ConOut, 3, 7); // h, v ;pos
 	Print(L"B.I.O.S. status:        Unlocked");
 	} else {
-	uefi_call_wrapper(ST->ConOut->SetCursorPosition, 3, ST->ConOut, 3, 9); // h, v ;pos
-	Print(L"B.I.O.S. status:        Locked");
+	uefi_call_wrapper(ST->ConOut->SetCursorPosition, 3, ST->ConOut, 3, 7); // h, v ;pos
+	Print(L"B.I.O.S. status:        Locked  ");
     }
 
-    uefi_call_wrapper(ST->ConOut->SetCursorPosition, 3, ST->ConOut, 3, 10); // h, v ;pos
-    Print(L"Video at 0x%02x is:      0x%02x", offset_video, data[offset_video]);
     if ( data[offset_video] == 0) {
-	uefi_call_wrapper(ST->ConOut->SetCursorPosition, 3, ST->ConOut, 3, 11); // h, v ;pos
+	uefi_call_wrapper(ST->ConOut->SetCursorPosition, 3, ST->ConOut, 3, 8); // h, v ;pos
 	Print(L"Video card:             IGFX -- Intel ");
 	} else {
-	uefi_call_wrapper(ST->ConOut->SetCursorPosition, 3, ST->ConOut, 3, 11); // h, v ;pos
+	uefi_call_wrapper(ST->ConOut->SetCursorPosition, 3, ST->ConOut, 3, 8); // h, v ;pos
 	Print(L"Video card:             SG   -- Nvidia");
+    }
+
+    if ( data[offset_audio] == 0) {
+	uefi_call_wrapper(ST->ConOut->SetCursorPosition, 3, ST->ConOut, 3, 9); // h, v ;pos
+	Print(L"HDMI Audio:             Enabled       ");
+	} else {
+	uefi_call_wrapper(ST->ConOut->SetCursorPosition, 3, ST->ConOut, 3, 9); // h, v ;pos
+	Print(L"HDMI Audio:             Disabled      ");
     }
 
     uefi_call_wrapper(ST->ConOut->SetAttribute, 2, ST->ConOut, EFI_WHITE|EFI_BACKGROUND_BLACK);
     uefi_call_wrapper(ST->ConOut->SetCursorPosition, 3, ST->ConOut, 0, 15);
     Print(L"\n\n Press V to switch video card\n");
     Print(L" Press B to unlock the bios\n");
+
+    Print(L" Press D to draw a box\n");
+    Print(L" Press H to enable/disable HDMI audio\n");
 
 
     Print(L" Press ENTER to save new settings\n");
@@ -180,22 +186,46 @@ redraw:
 	    }
 	    efi_input_key = KeyReset;
 	    goto redraw;
+        case 'h':
+	changes=1;
+	    if ( data[offset_audio] == 0) {
+		data[offset_audio] = 0x1;
+	    } else {
+		data[offset_audio] = 0x0;
+	    }
+	    efi_input_key = KeyReset;
+	    goto redraw;
+        case 'd':
+	    draw_box(L"Testing 123", 5, 60, 4);
+	    goto redraw;
         case 'x':
     	    Print(L" Exiting......\n");
     	    WaitForSingleEvent(ST->ConIn->WaitForKey, 10000000); // 10000000 = one second
-    	    return EFI_SUCCESS;
+	    if ( params == 0){ 
+    		return EFI_SUCCESS;
+	    } else {
+		uefi_call_wrapper(RT->ResetSystem, 4, EfiResetWarm, EFI_SUCCESS, 0, NULL);
+	    }
         case CHAR_CARRIAGE_RETURN:
 	    if ( changes == 0 ) {
     		Print(L" Nothing to save, booting......\n");
     		WaitForSingleEvent(ST->ConIn->WaitForKey, 10000000); // 10000000 = one second
+	    if ( params == 0){ 
     		return EFI_SUCCESS;
+	    } else {
+		uefi_call_wrapper(RT->ResetSystem, 4, EfiResetWarm, EFI_SUCCESS, 0, NULL);
+	    }
 	    }
 	    status = set_bios_variables(L"Setup", &guid, data_size, data);
 	    if (status != EFI_SUCCESS) {
 		uefi_call_wrapper(ST->ConOut->SetAttribute, 2, ST->ConOut, EFI_RED|EFI_BACKGROUND_BLACK);
 		Print(L" ERROR saving data %r\n" , status);
 		WaitForSingleEvent(ST->ConIn->WaitForKey, 10000000); // 10000000 = one second
+	    if ( params == 0){ 
     		return EFI_SUCCESS;
+	    } else {
+		uefi_call_wrapper(RT->ResetSystem, 4, EfiResetWarm, EFI_SUCCESS, 0, NULL);
+	    }
 	    }
 		uefi_call_wrapper(ST->ConOut->SetAttribute, 2, ST->ConOut, EFI_GREEN|EFI_BACKGROUND_BLACK);
 	    Print(L" Write data OK, rebooting...          \n");
@@ -209,13 +239,12 @@ redraw:
 	    }
     	    Print(L" Exiting......\n");
     	    WaitForSingleEvent(ST->ConIn->WaitForKey, 10000000); // 10000000 = one second
-    	    return EFI_SUCCESS;
+	    if ( params == 0){ 
+    		return EFI_SUCCESS;
+	    } else {
+		uefi_call_wrapper(RT->ResetSystem, 4, EfiResetWarm, EFI_SUCCESS, 0, NULL);
+	    }
         }
     }
     	    return EFI_SUCCESS;
 }
-
-
-
-
-
