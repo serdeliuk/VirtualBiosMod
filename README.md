@@ -36,4 +36,3 @@ Have fun!
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/serdeliuk) any donation is highly appreciated!
 
-Edit suggested:Please add steps a bit more in detail for complete beginners to BIOS modding. That would really help increase the reach of the mod.
