@@ -1,7 +1,7 @@
 # VirtualBiosMod
 
 #### Bios MOD without hardware flashing requirement
-[![download](https://img.shields.io/github/downloads/serdeliuk/VirtualBiosMod/total)](https://github.com/serdeliuk/VirtualBiosMod/releases/download/6/VirtualBiosMod.1.0.6.zip)
+[![download](https://img.shields.io/github/downloads/serdeliuk/VirtualBiosMod/total)](https://github.com/serdeliuk/VirtualBiosMod/releases/download/7/VirtualBiosMod.1.0.7.zip)
 
 ## This source code is licensed under [GNU GPLv3](https://www.gnu.org/licenses/gpl-3.0.html#preamble)
 ## Please read LICENSE.txt for more details
