@@ -29,7 +29,7 @@ Virtual Bios MOD boot screen
 - @LongSoft for [Universal-IFR-Extractor](https://github.com/LongSoft/Universal-IFR-Extractor) and [UEFItool](https://github.com/LongSoft/UEFITool)
 - @Zibri for [afulnx](https://github.com/Zibri/afulnx)
 - @RomanHargrave for [amifldrv](https://github.com/RomanHargrave/amifldrv)
-
+- @Richard-W for [uefi-run](https://github.com/Richard-W/uefi-run)
 
 I hope that will help in your future projects<br><br>
 Have fun!
