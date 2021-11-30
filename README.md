@@ -30,6 +30,7 @@ Virtual Bios MOD boot screen
 - @Zibri for [afulnx](https://github.com/Zibri/afulnx)
 - @RomanHargrave for [amifldrv](https://github.com/RomanHargrave/amifldrv)
 - @Richard-W for [uefi-run](https://github.com/Richard-W/uefi-run)
+- @platomav for [BIOSUtilities](https://github.com/platomav/BIOSUtilities)
 
 I hope that will help in your future projects<br><br>
 Have fun!
