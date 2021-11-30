@@ -16,7 +16,7 @@ If your bootloader does not know how to load efi drivers put the VirtualBiosMod.
 Put the new entry as first boot and the second boot put OS which want to boot after exit from VirtualBiosMod.efi app
 Please refer to [Wiki](https://github.com/serdeliuk/VirtualBiosMod/wiki) for more details
 
-This version modify your bios cmos settings, you can change bios lock and / or disable nvidia video card.
+This version modify your bios CMOS settings, you can change bios lock and / or disable nvidia video card.
 
 Use this thread for comments [Virtual Bios Mod without flashing](https://www.tonymacx86.com/threads/guide-virtual-bios-mod-without-flash.300335//)
 <br><br>
