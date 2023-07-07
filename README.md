@@ -18,7 +18,7 @@ Please refer to [Wiki](https://github.com/serdeliuk/VirtualBiosMod/wiki) for mor
 
 This version modify your bios CMOS settings, you can change bios lock and / or disable nvidia video card.
 
-Use this thread for comments [Virtual Bios Mod without flashing](https://www.tonymacx86.com/threads/guide-virtual-bios-mod-without-flash.300335//)
+Use this thread for comments [Virtual Bios Mod without flashing](https://forum.xda-developers.com/t/development-virtualbiosmod-b-i-o-s-mod-without-flashing.4603485/)
 <br><br>
 
 Virtual Bios MOD boot screen
