@@ -15,6 +15,8 @@
 #
 #        You should have received a copy of the GNU General Public License
 #        along with VirtualBiosMod.  If not, see <http://www.gnu.org/licenses/>.
+#
+#        Please keep this header in all your source code.
 
 
 ARCH            = $(shell uname -m)

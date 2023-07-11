@@ -45,11 +45,22 @@ static EFI_STATUS get_bios_variables(const EFI_GUID *vendor, CHAR16 *name, CHAR8
 }
 
 
+
+static EFI_STATUS set_bios_variables(CHAR16 *name, const EFI_GUID *vendor, UINT32 attributes, UINTN size, CHAR8 *buffer) {
+    EFI_STATUS status;
+    status = uefi_call_wrapper(RT->SetVariable, 5, name, vendor, attributes, size, buffer);
+    return status;
+}
+
+/*
 static EFI_STATUS set_bios_variables(CHAR16 *name, const EFI_GUID *vendor, UINTN size, CHAR8 *buffer) {
     EFI_STATUS status;
     status = uefi_call_wrapper(RT->SetVariable, 5, name, vendor, 3, size, buffer);
+//    status = uefi_call_wrapper(RT->SetVariable, 5, name, vendor, EFI_VARIABLE_BOOTSERVICE_ACCESS | EFI_VARIABLE_RUNTIME_ACCESS | EFI_VARIABLE_NON_VOLATILE, size, buffer);
+//    status = uefi_call_wrapper(RT->SetVariable, 5, name, vendor, attributes, size, buffer);
     return status;
 }
+*/
 
 static EFI_STATUS draw_box_simple(int width, int lines, int h, int v) {
     EFI_STATUS status;
@@ -57,11 +68,17 @@ static EFI_STATUS draw_box_simple(int width, int lines, int h, int v) {
 
     status = uefi_call_wrapper(ST->ConOut->SetCursorPosition, 3, ST->ConOut, h, v); // h, v ;pos
 
+////////// title bar
     Print(L"%c",BOXDRAW_DOWN_RIGHT_DOUBLE);
 	for(int i = 0; i < length; i++) {
 	    Print(L"%c",BOXDRAW_DOUBLE_HORIZONTAL);
 	};
+//	Print(L"%c",BOXDRAW_DOWN_RIGHT_DOUBLE);
+//	    for(int i = 0; i < 2; i++) {
+//        	Print(L"%c",BOXDRAW_DOUBLE_HORIZONTAL);
+//	    };
 	Print(L"%c",BOXDRAW_DOWN_LEFT_DOUBLE);
+//////////////
 
     for(int w=0; w<lines ; w++){
 	v++;
@@ -84,7 +101,7 @@ static EFI_STATUS draw_box_simple(int width, int lines, int h, int v) {
 }
 
 
-
+/*
 static EFI_STATUS draw_box(CHAR16 *title, int lines, int h, int v) {
     EFI_STATUS status;
     status = uefi_call_wrapper(ST->ConOut->SetCursorPosition, 3, ST->ConOut, h, v); // h, v ;pos
@@ -96,6 +113,7 @@ static EFI_STATUS draw_box(CHAR16 *title, int lines, int h, int v) {
             Print(L"%c",BOXDRAW_DOUBLE_HORIZONTAL);
         };
 	Print(L" %s ", title);
+//	Print(L"%c",BOXDRAW_DOWN_RIGHT_DOUBLE);
 	    for(int i = 0; i < 2; i++) {
         	Print(L"%c",BOXDRAW_DOUBLE_HORIZONTAL);
 	    };
@@ -109,6 +127,7 @@ static EFI_STATUS draw_box(CHAR16 *title, int lines, int h, int v) {
                 Print(L" ");
             };
         Print(L"%c",BOXDRAW_VERTICAL);
+//	v++;
     };
 
 	v++;
@@ -120,31 +139,34 @@ static EFI_STATUS draw_box(CHAR16 *title, int lines, int h, int v) {
     Print(L"%c",BOXDRAW_UP_LEFT_DOUBLE);
     return status;
 }
+*/
 
 
-static EFI_STATUS GetCursorPosition( IN UINTN *h, IN UINTN *v) {
-    *h = gST->ConOut->Mode->CursorColumn;
-    *v = gST->ConOut->Mode->CursorRow;
+//static EFI_STATUS GetCursorPosition( IN UINTN *h, IN UINTN *v) {
+//    *h = gST->ConOut->Mode->CursorColumn;
+//    *v = gST->ConOut->Mode->CursorRow;
+//
+//    return 0;
+//}
 
-    return 0;
-}
-
+/*
 static EFI_STATUS draw_box_menu(CHAR16 *title, int lines, int h, int v ) {
     EFI_STATUS status;
     EFI_INPUT_KEY efi_input_key;
-    EFI_INPUT_KEY KeyReset = {0};
+//    EFI_INPUT_KEY KeyReset = {0};
 
     BOOLEAN exit = FALSE;
 
     status = uefi_call_wrapper(ST->ConOut->SetCursorPosition, 3, ST->ConOut, h, v); // h, v ;pos
     int length = StrLen(title) + 6;
-    UINTN pos = v;
+//    UINTN pos = v;
 ////////// title bar
     Print(L"%c",BOXDRAW_DOWN_RIGHT_DOUBLE);
         for(int i = 0; i < 2; i++) {
             Print(L"%c",BOXDRAW_DOUBLE_HORIZONTAL);
         };
 	Print(L" %s ", title);
+//	Print(L"%c",BOXDRAW_DOWN_RIGHT_DOUBLE);
 	    for(int i = 0; i < 2; i++) {
         	Print(L"%c",BOXDRAW_DOUBLE_HORIZONTAL);
 	    };
@@ -158,6 +180,7 @@ static EFI_STATUS draw_box_menu(CHAR16 *title, int lines, int h, int v ) {
                 Print(L" ");
             };
         Print(L"%c",BOXDRAW_VERTICAL);
+//	v++;
     };
 
 	v++;
@@ -167,13 +190,21 @@ static EFI_STATUS draw_box_menu(CHAR16 *title, int lines, int h, int v ) {
             Print(L"%c",BOXDRAW_DOUBLE_HORIZONTAL);
         };
     Print(L"%c",BOXDRAW_UP_LEFT_DOUBLE);
+*/
 
+/*    UINTN ve;
+    UINTN ho;
+    GetCursorPosition(&ve, &ho);
+    PrintAt(0,0,L"zerozero");
+    uefi_call_wrapper(ST->ConOut->SetCursorPosition, 3, ST->ConOut, ve, ho);  // h, v ;pos
+*/
+/*
     uefi_call_wrapper(ST->ConOut->SetAttribute, 2, ST->ConOut, EFI_WHITE|EFI_BACKGROUND_RED);
 
-    int menu_index = 0;
-    CHAR8 menu_item_0 = "item 0";
-    CHAR8 menu_item_1 = "item 1";
-    CHAR8 menu_item_2 = "item 2";
+//    int menu_index = 0;
+//    CHAR8 menu_item_0 = "item 0";
+//    CHAR8 menu_item_1 = "item 1";
+//    CHAR8 menu_item_2 = "item 2";
 
 redraw_menu:
     WaitForSingleEvent(ST->ConIn->WaitForKey, 10); // 10000000 = one second
@@ -187,6 +218,8 @@ redraw_menu:
     switch (efi_input_key.UnicodeChar) {
         case CHAR_CARRIAGE_RETURN:
 	    PrintAt(0,0,L"ENTER   ");
+//	    efi_input_key = KeyReset;
+//            exit = TRUE;
             break;
         case 'x':
 	    PrintAt(0,0,L"x       ");
@@ -214,3 +247,9 @@ redraw_menu:
     goto redraw_menu;
     return status;
 }
+*/
+
+
+
+
+
